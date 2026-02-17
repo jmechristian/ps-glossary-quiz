@@ -9,9 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^4.15.0",
+    "aws-amplify": "^6.16.2",
+    "framer-motion": "^12.34.1",
+    "lottie-react": "^2.4.1",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
