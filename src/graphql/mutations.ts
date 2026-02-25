@@ -1646,6 +1646,7 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -1902,6 +1903,7 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -2158,6 +2160,7 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -2211,6 +2214,7 @@ export const createUserXp = /* GraphQL */ `mutation CreateUserXp(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2277,6 +2281,7 @@ export const updateUserXp = /* GraphQL */ `mutation UpdateUserXp(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2343,6 +2348,7 @@ export const deleteUserXp = /* GraphQL */ `mutation DeleteUserXp(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2637,6 +2643,7 @@ export const createLearningPathProgress = /* GraphQL */ `mutation CreateLearning
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2719,6 +2726,7 @@ export const updateLearningPathProgress = /* GraphQL */ `mutation UpdateLearning
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2801,6 +2809,7 @@ export const deleteLearningPathProgress = /* GraphQL */ `mutation DeleteLearning
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3366,6 +3375,7 @@ export const createCMPMForm = /* GraphQL */ `mutation CreateCMPMForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3449,6 +3459,7 @@ export const updateCMPMForm = /* GraphQL */ `mutation UpdateCMPMForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3532,6 +3543,7 @@ export const deleteCMPMForm = /* GraphQL */ `mutation DeleteCMPMForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3615,6 +3627,7 @@ export const createIcpfCmpmForm = /* GraphQL */ `mutation CreateIcpfCmpmForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3712,6 +3725,7 @@ export const updateIcpfCmpmForm = /* GraphQL */ `mutation UpdateIcpfCmpmForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3809,6 +3823,7 @@ export const deleteIcpfCmpmForm = /* GraphQL */ `mutation DeleteIcpfCmpmForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3906,6 +3921,7 @@ export const createPgsfForm = /* GraphQL */ `mutation CreatePgsfForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4007,6 +4023,7 @@ export const updatePgsfForm = /* GraphQL */ `mutation UpdatePgsfForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4108,6 +4125,7 @@ export const deletePgsfForm = /* GraphQL */ `mutation DeletePgsfForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4209,6 +4227,7 @@ export const createCPSForm = /* GraphQL */ `mutation CreateCPSForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4294,6 +4313,7 @@ export const updateCPSForm = /* GraphQL */ `mutation UpdateCPSForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4379,6 +4399,7 @@ export const deleteCPSForm = /* GraphQL */ `mutation DeleteCPSForm(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8908,6 +8929,7 @@ export const createCourseReview = /* GraphQL */ `mutation CreateCourseReview(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -9008,6 +9030,7 @@ export const updateCourseReview = /* GraphQL */ `mutation UpdateCourseReview(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -9108,6 +9131,7 @@ export const deleteCourseReview = /* GraphQL */ `mutation DeleteCourseReview(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -9170,6 +9194,7 @@ export const createOrder = /* GraphQL */ `mutation CreateOrder(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -9244,6 +9269,7 @@ export const updateOrder = /* GraphQL */ `mutation UpdateOrder(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -9318,6 +9344,7 @@ export const deleteOrder = /* GraphQL */ `mutation DeleteOrder(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10737,6 +10764,7 @@ export const createUserCompletedLessons = /* GraphQL */ `mutation CreateUserComp
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10833,6 +10861,7 @@ export const updateUserCompletedLessons = /* GraphQL */ `mutation UpdateUserComp
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10929,6 +10958,7 @@ export const deleteUserCompletedLessons = /* GraphQL */ `mutation DeleteUserComp
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11099,6 +11129,7 @@ export const createAchievementUsers = /* GraphQL */ `mutation CreateAchievementU
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11168,6 +11199,7 @@ export const updateAchievementUsers = /* GraphQL */ `mutation UpdateAchievementU
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11237,6 +11269,7 @@ export const deleteAchievementUsers = /* GraphQL */ `mutation DeleteAchievementU
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11306,6 +11339,7 @@ export const createCohortUsers = /* GraphQL */ `mutation CreateCohortUsers(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11380,6 +11414,7 @@ export const updateCohortUsers = /* GraphQL */ `mutation UpdateCohortUsers(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11454,6 +11489,7 @@ export const deleteCohortUsers = /* GraphQL */ `mutation DeleteCohortUsers(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11528,6 +11564,7 @@ export const createUserWishlist = /* GraphQL */ `mutation CreateUserWishlist(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11624,6 +11661,7 @@ export const updateUserWishlist = /* GraphQL */ `mutation UpdateUserWishlist(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11720,6 +11758,7 @@ export const deleteUserWishlist = /* GraphQL */ `mutation DeleteUserWishlist(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId

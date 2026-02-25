@@ -10,12 +10,14 @@ import { termFetcher, fetchLetterPool, resetTermFetcherSession } from "@/lib/gam
 import {
   upsertUserGameStats,
   upsertLeaderboardEntry,
+  updateLeaderboardInitials,
 } from "@/lib/gameApi";
 import { BoardPath } from "@/components/BoardPath";
 import { FlashcardPrompt } from "@/components/FlashcardPrompt";
 import { ChoiceButtons } from "@/components/ChoiceButtons";
 import { TimerRing } from "@/components/TimerRing";
 import { ResultToast } from "@/components/ResultToast";
+import { EnterInitials } from "@/components/EnterInitials";
 import { StreakHUD } from "@/components/StreakHUD";
 import { AnimatedCard } from "@/components/motion/AnimatedCard";
 import { ui } from "@/components/ui/styles";
@@ -54,6 +56,7 @@ export default function PlayPage() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const gameOverAttemptedRef = useRef<number>(0);
+  const [initialsDone, setInitialsDone] = useState(false);
 
   const persistGameOver = useCallback(
     async (finalStreak: number) => {
@@ -204,25 +207,39 @@ export default function PlayPage() {
   );
 
   if (phase === "gameover") {
+    const showEnterInitials = user && !initialsDone;
     return (
       <>
+        <EnterInitials
+          open={showEnterInitials}
+          onSubmit={async (initials) => {
+            if (user) {
+              await updateLeaderboardInitials(user.id, initials);
+            }
+            setInitialsDone(true);
+          }}
+          onSkip={() => setInitialsDone(true)}
+        />
         <ResultToast
-          open={true}
+          open={!showEnterInitials}
           correct={streakCorrect}
           streak={streakCorrect}
           attempted={gameOverAttemptedRef.current}
-          onPlayAgain={() => setPhase("idle")}
+          onPlayAgain={() => {
+            setInitialsDone(false);
+            setPhase("idle");
+          }}
           onLeaderboard={() => router.push("/leaderboard")}
           onHome={() => router.push("/")}
         />
-        <div className="min-h-screen" />
+        <div className="min-h-full" />
       </>
     );
   }
 
   if (!currentTerm) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex h-full min-h-full items-center justify-center">
         <div className="text-xl text-zinc-600">Loading...</div>
       </div>
     );
@@ -233,7 +250,7 @@ export default function PlayPage() {
   const feedbackIndex = isCorrect !== null ? selectedIndex : null;
 
   return (
-    <div className={`min-h-screen ${ui.page} p-4 md:p-8`}>
+    <div className={`h-full min-h-full ${ui.page} p-4 md:p-8`}>
       <div className={`${ui.container} ${ui.stage}`}>
         <div className="flex items-center justify-between mb-4 py-2 px-1 rounded-xl bg-white/60 border border-black/5">
           <StreakHUD streak={streakCorrect} />

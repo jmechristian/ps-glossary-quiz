@@ -287,3 +287,38 @@ export async function upsertLeaderboardEntry(
     console.warn("Could not persist LeaderboardEntry:", err);
   }
 }
+
+const LEADERBOARD_PERIODS: LeaderboardPeriod[] = ["DAILY", "WEEKLY", "ALL"];
+
+/**
+ * Updates displayName (e.g. 3-letter initials) for a user's leaderboard entries
+ * across all periods. Use after "Enter Your Initials" to store arcade-style initials.
+ */
+export async function updateLeaderboardInitials(
+  userId: string,
+  initials: string
+): Promise<void> {
+  const displayName = initials.slice(0, 3).toUpperCase();
+  if (!displayName) return;
+  try {
+    for (const period of LEADERBOARD_PERIODS) {
+      const key = getLeaderboardKey(period);
+      const entryId = `${key}#${userId}`;
+      const getResult = await client.graphql({
+        query: getLeaderboardEntryQuery,
+        variables: { id: entryId },
+      });
+      const existing = getData<{ getLeaderboardEntry?: { id: string } }>(getResult);
+      if (existing.getLeaderboardEntry) {
+        await client.graphql({
+          query: updateLeaderboardEntryMutation,
+          variables: {
+            input: { id: entryId, displayName },
+          },
+        });
+      }
+    }
+  } catch (err) {
+    console.warn("Could not update leaderboard initials:", err);
+  }
+}

@@ -315,6 +315,7 @@ type User @model @auth(rules: [{ allow: public }]) {
   icpfCmpmForm: IcpfCmpmForm @hasOne(fields: ["icpfCmpmFormID"])
   pgsfFormID: ID
   pgsfForm: PgsfForm @hasOne(fields: ["pgsfFormID"])
+  initials: String
 }
 
 type UserXp @model @auth(rules: [{ allow: public }]) {

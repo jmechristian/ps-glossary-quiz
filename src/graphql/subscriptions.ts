@@ -1541,6 +1541,7 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -1794,6 +1795,7 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -2047,6 +2049,7 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -2097,6 +2100,7 @@ export const onCreateUserXp = /* GraphQL */ `subscription OnCreateUserXp($filter
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2160,6 +2164,7 @@ export const onUpdateUserXp = /* GraphQL */ `subscription OnUpdateUserXp($filter
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2223,6 +2228,7 @@ export const onDeleteUserXp = /* GraphQL */ `subscription OnDeleteUserXp($filter
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2504,6 +2510,7 @@ export const onCreateLearningPathProgress = /* GraphQL */ `subscription OnCreate
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2585,6 +2592,7 @@ export const onUpdateLearningPathProgress = /* GraphQL */ `subscription OnUpdate
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2666,6 +2674,7 @@ export const onDeleteLearningPathProgress = /* GraphQL */ `subscription OnDelete
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3219,6 +3228,7 @@ export const onCreateCMPMForm = /* GraphQL */ `subscription OnCreateCMPMForm($fi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3299,6 +3309,7 @@ export const onUpdateCMPMForm = /* GraphQL */ `subscription OnUpdateCMPMForm($fi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3379,6 +3390,7 @@ export const onDeleteCMPMForm = /* GraphQL */ `subscription OnDeleteCMPMForm($fi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3461,6 +3473,7 @@ export const onCreateIcpfCmpmForm = /* GraphQL */ `subscription OnCreateIcpfCmpm
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3557,6 +3570,7 @@ export const onUpdateIcpfCmpmForm = /* GraphQL */ `subscription OnUpdateIcpfCmpm
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3653,6 +3667,7 @@ export const onDeleteIcpfCmpmForm = /* GraphQL */ `subscription OnDeleteIcpfCmpm
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3747,6 +3762,7 @@ export const onCreatePgsfForm = /* GraphQL */ `subscription OnCreatePgsfForm($fi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3845,6 +3861,7 @@ export const onUpdatePgsfForm = /* GraphQL */ `subscription OnUpdatePgsfForm($fi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -3943,6 +3960,7 @@ export const onDeletePgsfForm = /* GraphQL */ `subscription OnDeletePgsfForm($fi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4041,6 +4059,7 @@ export const onCreateCPSForm = /* GraphQL */ `subscription OnCreateCPSForm($filt
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4123,6 +4142,7 @@ export const onUpdateCPSForm = /* GraphQL */ `subscription OnUpdateCPSForm($filt
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -4205,6 +4225,7 @@ export const onDeleteCPSForm = /* GraphQL */ `subscription OnDeleteCPSForm($filt
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8460,6 +8481,7 @@ export const onCreateCourseReview = /* GraphQL */ `subscription OnCreateCourseRe
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8559,6 +8581,7 @@ export const onUpdateCourseReview = /* GraphQL */ `subscription OnUpdateCourseRe
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8658,6 +8681,7 @@ export const onDeleteCourseReview = /* GraphQL */ `subscription OnDeleteCourseRe
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8717,6 +8741,7 @@ export const onCreateOrder = /* GraphQL */ `subscription OnCreateOrder($filter: 
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8788,6 +8813,7 @@ export const onUpdateOrder = /* GraphQL */ `subscription OnUpdateOrder($filter: 
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -8859,6 +8885,7 @@ export const onDeleteOrder = /* GraphQL */ `subscription OnDeleteOrder($filter: 
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10223,6 +10250,7 @@ export const onCreateUserCompletedLessons = /* GraphQL */ `subscription OnCreate
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10318,6 +10346,7 @@ export const onUpdateUserCompletedLessons = /* GraphQL */ `subscription OnUpdate
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10413,6 +10442,7 @@ export const onDeleteUserCompletedLessons = /* GraphQL */ `subscription OnDelete
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10579,6 +10609,7 @@ export const onCreateAchievementUsers = /* GraphQL */ `subscription OnCreateAchi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10647,6 +10678,7 @@ export const onUpdateAchievementUsers = /* GraphQL */ `subscription OnUpdateAchi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10715,6 +10747,7 @@ export const onDeleteAchievementUsers = /* GraphQL */ `subscription OnDeleteAchi
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10783,6 +10816,7 @@ export const onCreateCohortUsers = /* GraphQL */ `subscription OnCreateCohortUse
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10856,6 +10890,7 @@ export const onUpdateCohortUsers = /* GraphQL */ `subscription OnUpdateCohortUse
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -10929,6 +10964,7 @@ export const onDeleteCohortUsers = /* GraphQL */ `subscription OnDeleteCohortUse
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11002,6 +11038,7 @@ export const onCreateUserWishlist = /* GraphQL */ `subscription OnCreateUserWish
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11097,6 +11134,7 @@ export const onUpdateUserWishlist = /* GraphQL */ `subscription OnUpdateUserWish
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -11192,6 +11230,7 @@ export const onDeleteUserWishlist = /* GraphQL */ `subscription OnDeleteUserWish
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId

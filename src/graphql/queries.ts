@@ -1111,6 +1111,7 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
       pgsfFormUserId
       __typename
     }
+    initials
     createdAt
     updatedAt
     userUserXpId
@@ -1161,6 +1162,7 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -1211,6 +1213,7 @@ export const getUserXp = /* GraphQL */ `query GetUserXp($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -1424,6 +1427,7 @@ export const getLearningPathProgress = /* GraphQL */ `query GetLearningPathProgr
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -1772,6 +1776,7 @@ export const getCMPMForm = /* GraphQL */ `query GetCMPMForm($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -1898,6 +1903,7 @@ export const getIcpfCmpmForm = /* GraphQL */ `query GetIcpfCmpmForm($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2052,6 +2058,7 @@ export const getPgsfForm = /* GraphQL */ `query GetPgsfForm($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -2214,6 +2221,7 @@ export const getCPSForm = /* GraphQL */ `query GetCPSForm($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -5112,6 +5120,7 @@ export const getCourseReview = /* GraphQL */ `query GetCourseReview($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -5197,6 +5206,7 @@ export const getOrder = /* GraphQL */ `query GetOrder($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -6092,6 +6102,7 @@ export const getUserCompletedLessons = /* GraphQL */ `query GetUserCompletedLess
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -6230,6 +6241,7 @@ export const getAchievementUsers = /* GraphQL */ `query GetAchievementUsers($id:
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -6318,6 +6330,7 @@ export const getCohortUsers = /* GraphQL */ `query GetCohortUsers($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -6411,6 +6424,7 @@ export const getUserWishlist = /* GraphQL */ `query GetUserWishlist($id: ID!) {
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -7510,6 +7524,7 @@ export const usersByName = /* GraphQL */ `query UsersByName(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -7574,6 +7589,7 @@ export const usersByEmail = /* GraphQL */ `query UsersByEmail(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
@@ -7638,6 +7654,7 @@ export const usersByCompanyID = /* GraphQL */ `query UsersByCompanyID(
       tourCompleted
       icpfCmpmFormID
       pgsfFormID
+      initials
       createdAt
       updatedAt
       userUserXpId
