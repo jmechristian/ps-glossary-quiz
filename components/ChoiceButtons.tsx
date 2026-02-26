@@ -43,7 +43,7 @@ export function ChoiceButtons({
         const selected = selectedIndex === i;
         const isCorrectChoice = i === correctIndex;
         const baseHeight = "min-h-[7.5rem]";
-        let btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium ${baseHeight} w-full transition-shadow ${ui.surfaceSm} hover:shadow-[0_14px_34px_rgba(0,0,0,0.10)]`;
+        let btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium text-black ${baseHeight} w-full transition-shadow ${ui.surfaceSm} hover:shadow-[0_14px_34px_rgba(0,0,0,0.10)]`;
 
         if (isRevealed) {
           if (isCorrectChoice) {

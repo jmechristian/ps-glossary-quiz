@@ -10,9 +10,9 @@ type FlashcardPromptProps = {
 export function FlashcardPrompt({ term }: FlashcardPromptProps) {
   return (
     <div
-      className={`${ui.surface} p-8 md:p-12 text-center min-h-[160px] flex items-center justify-center`}
+      className={`${ui.surface} p-8 md:p-12 text-center min-h-[160px] flex items-center justify-center text-black`}
     >
-      <h2 className={ui.h2}>{term}</h2>
+      <h2 className={`${ui.h2} text-black`}>{term}</h2>
     </div>
   );
 }
