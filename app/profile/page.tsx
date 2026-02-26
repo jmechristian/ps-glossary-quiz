@@ -47,7 +47,7 @@ export default function ProfilePage() {
         setDisplayName(p?.name ?? user.name ?? '');
         setTitle(p?.title ?? '');
         setCompany(p?.company ?? '');
-        setInitials((p as { initials?: string })?.initials ?? '');
+        setInitials(p?.initials ?? '');
       });
     }
   }, [user]);
@@ -160,7 +160,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className='grid gap-4 mb-2'>
+          <div className='grid grid-cols-2 gap-x-6 gap-y-4 mb-2'>
             <div>
               <label className='block text-xs font-semibold text-white/70 uppercase tracking-wide mb-1'>
                 Name

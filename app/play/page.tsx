@@ -19,6 +19,8 @@ import {
   upsertUserGameStats,
   upsertLeaderboardEntry,
   updateLeaderboardInitials,
+  getLeaderboardDisplayName,
+  getUserProfile,
 } from '@/lib/gameApi';
 import { BoardPath } from '@/components/BoardPath';
 import { FlashcardPrompt } from '@/components/FlashcardPrompt';
@@ -35,7 +37,11 @@ import { AnimatedCard } from '@/components/motion/AnimatedCard';
 import { ui } from '@/components/ui/styles';
 import type { GlossaryTermLike } from '@/lib/randomTerms';
 import type { LeaderboardPeriod } from '@/lib/leaderboard';
-import { PENDING_SCORE_KEY } from '@/lib/pendingScore';
+import {
+  PENDING_SCORE_KEY,
+  getPendingScore,
+  flushPendingScoreWithInitials,
+} from '@/lib/pendingScore';
 
 const TIMER_SECONDS = 10;
 const ENABLE_TIMER = true;
@@ -73,18 +79,23 @@ export default function PlayPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const gameOverAttemptedRef = useRef<number>(0);
   const [initialsDone, setInitialsDone] = useState(false);
+  const [pendingScoreAfterLogin, setPendingScoreAfterLogin] = useState<{
+    score: number;
+  } | null>(null);
+  const [userInitials, setUserInitials] = useState('');
 
   const persistGameOver = useCallback(
     async (finalStreak: number) => {
       if (!user) return;
       try {
+        const displayName = await getLeaderboardDisplayName(user.id, user.name);
         await upsertUserGameStats(user.id, { streakCorrect: finalStreak });
         const periods: LeaderboardPeriod[] = ['DAILY', 'WEEKLY', 'ALL'];
         for (const p of periods) {
           await upsertLeaderboardEntry(
             p,
             user.id,
-            user.name,
+            displayName,
             user.picture,
             finalStreak,
           );
@@ -184,6 +195,19 @@ export default function PlayPage() {
   }, []);
 
   useEffect(() => {
+    if (!user) return;
+    const pending = getPendingScore();
+    if (pending) setPendingScoreAfterLogin(pending);
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    getUserProfile(user.id).then((p) => {
+      setUserInitials((p?.initials ?? '').trim().slice(0, 3).toUpperCase());
+    });
+  }, [user]);
+
+  useEffect(() => {
     if (phase === 'idle') {
       reset();
       selectorRef.current = createTermSelector(termFetcher);
@@ -246,15 +270,51 @@ export default function PlayPage() {
     ],
   );
 
+  if (user && pendingScoreAfterLogin) {
+    return (
+      <EnterInitials
+        key={`pending-${userInitials}`}
+        open
+        isGuest={false}
+        score={pendingScoreAfterLogin.score}
+        defaultInitials={userInitials}
+        onSubmit={async (initialsValue) => {
+          await flushPendingScoreWithInitials(
+            user,
+            pendingScoreAfterLogin!.score,
+            initialsValue,
+          );
+          setPendingScoreAfterLogin(null);
+          router.push('/leaderboard');
+        }}
+        onSkip={() => {
+          sessionStorage.removeItem(PENDING_SCORE_KEY);
+          setPendingScoreAfterLogin(null);
+        }}
+        onPlayAgain={() => {
+          sessionStorage.removeItem(PENDING_SCORE_KEY);
+          setPendingScoreAfterLogin(null);
+        }}
+        onHome={() => {
+          sessionStorage.removeItem(PENDING_SCORE_KEY);
+          setPendingScoreAfterLogin(null);
+          router.push('/');
+        }}
+      />
+    );
+  }
+
   if (phase === 'gameover') {
     const showEnterInitials = !initialsDone;
     return (
       <>
         <EnterInitials
+          key={showEnterInitials ? `gameover-${userInitials}` : 'gameover-closed'}
           {...({
             open: showEnterInitials,
             isGuest: !user,
             score: streakCorrect,
+            defaultInitials: userInitials,
             onLogin: !user
               ? () => {
                   try {
@@ -265,7 +325,7 @@ export default function PlayPage() {
                   } catch {
                     /* ignore */
                   }
-                  login('/leaderboard');
+                  login('/play');
                 }
               : undefined,
             onPlayAgain: () => {
@@ -276,9 +336,9 @@ export default function PlayPage() {
               setInitialsDone(true);
               router.push('/');
             },
-            onSubmit: async (initials) => {
+            onSubmit: async (initialsValue) => {
               if (user) {
-                await updateLeaderboardInitials(user.id, initials);
+                await updateLeaderboardInitials(user.id, initialsValue);
               }
               setInitialsDone(true);
             },

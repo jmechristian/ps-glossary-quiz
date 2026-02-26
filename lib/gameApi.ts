@@ -161,6 +161,7 @@ export interface UserProfileData {
   name?: string | null;
   title?: string | null;
   company?: string | null;
+  initials?: string | null;
 }
 
 export async function getUserProfile(userId: string): Promise<UserProfileData | null> {
@@ -176,15 +177,26 @@ export async function getUserProfile(userId: string): Promise<UserProfileData | 
       name: u.name ?? null,
       title: u.title ?? null,
       company: u.company ?? null,
+      initials: u.initials ?? null,
     };
   } catch {
     return null;
   }
 }
 
+/** Preferred display name for leaderboard: User initials if set, else fallback (e.g. user.name). */
+export async function getLeaderboardDisplayName(
+  userId: string,
+  fallback: string
+): Promise<string> {
+  const profile = await getUserProfile(userId);
+  const initials = profile?.initials?.trim().slice(0, 3).toUpperCase();
+  return initials && initials.length > 0 ? initials : fallback;
+}
+
 export async function updateUserProfile(
   userId: string,
-  updates: { name?: string; title?: string; company?: string }
+  updates: { name?: string; title?: string; company?: string; initials?: string }
 ): Promise<void> {
   try {
     await client.graphql({
@@ -281,6 +293,29 @@ export async function getLeaderboard(
   }
 }
 
+/**
+ * Ensures each entry from a period (e.g. Daily/Weekly) exists in All-time.
+ * Fixes scores that appear in Daily/Weekly but were never written to ALL.
+ * Upsert only updates ALL if the new score is higher, so safe to call.
+ */
+export async function syncEntriesToAllTime(
+  entries: LeaderboardEntryData[]
+): Promise<void> {
+  for (const e of entries) {
+    try {
+      await upsertLeaderboardEntry(
+        "ALL",
+        e.userID,
+        e.displayName ?? "???",
+        e.avatarUrl ?? null,
+        e.score
+      );
+    } catch {
+      // ignore per-entry failures
+    }
+  }
+}
+
 export async function upsertLeaderboardEntry(
   period: LeaderboardPeriod,
   userId: string,
@@ -335,7 +370,7 @@ const LEADERBOARD_PERIODS: LeaderboardPeriod[] = ["DAILY", "WEEKLY", "ALL"];
 
 /**
  * Updates displayName (e.g. 3-letter initials) for a user's leaderboard entries
- * across all periods. Use after "Enter Your Initials" to store arcade-style initials.
+ * across all periods and saves initials on the User. Use after "Enter Your Initials".
  */
 export async function updateLeaderboardInitials(
   userId: string,
@@ -344,6 +379,7 @@ export async function updateLeaderboardInitials(
   const displayName = initials.slice(0, 3).toUpperCase();
   if (!displayName) return;
   try {
+    await updateUserProfile(userId, { initials: displayName });
     for (const period of LEADERBOARD_PERIODS) {
       const key = getLeaderboardKey(period);
       const entryId = `${key}#${userId}`;

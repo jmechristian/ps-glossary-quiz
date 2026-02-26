@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { getLeaderboard, getUserProfile } from '@/lib/gameApi';
+import { getLeaderboard, getUserProfile, syncEntriesToAllTime } from '@/lib/gameApi';
 import {
   SegmentedTabs,
   type TabKey,
@@ -52,6 +52,10 @@ export default function LeaderboardPage() {
         });
         setCompaniesByUserId(map);
       });
+      // Backfill All-time so scores in Daily/Weekly appear in All-time
+      if (tab === 'Daily' || tab === 'Weekly') {
+        syncEntriesToAllTime(items).catch(() => {});
+      }
     });
   }, [tab]);
 
@@ -64,8 +68,8 @@ export default function LeaderboardPage() {
       className={`h-full min-h-full bg-cover bg-center bg-no-repeat`}
       style={{ backgroundImage: 'url(/images/back-black.png)' }}
     >
-      <div className='max-w-5xl mx-auto py-12 mt-5'>
-        <div className='w-full bg-zinc-700/40 backdrop-blur px-10 py-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)]'>
+      <div className='max-w-5xl mx-auto'>
+        <div className='w-full h-screen bg-zinc-700/40 backdrop-blur px-10 py-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)]'>
           <div className='flex justify-between items-center pb-10'>
             <Link
               href='/'
@@ -201,69 +205,71 @@ export default function LeaderboardPage() {
                 </div>
               ) : entries.length > 0 ? (
                 <div className={`${ui.surface} overflow-hidden`}>
-                  <ul>
-                    {listEntries.map((e, i) => {
-                      const rank = (page - 1) * PAGE_SIZE + i + 1;
-                      const medalBg =
-                        rank === 1
-                          ? 'bg-amber-400 text-white'
-                          : rank === 2
-                            ? 'bg-slate-300 text-slate-800'
-                            : rank === 3
-                              ? 'bg-amber-700 text-white'
-                              : '';
-                      const avatarRing =
-                        rank === 1
-                          ? 'ring-3 ring-amber-500 ring-offset-2 ring-offset-white'
-                          : rank === 2
-                            ? 'ring-3 ring-slate-400 ring-offset-2 ring-offset-white'
-                            : rank === 3
-                              ? 'ring-3 ring-amber-800 ring-offset-2 ring-offset-white'
-                              : '';
-                      return (
-                        <li
-                          key={e.id}
-                          className='flex items-center gap-4 px-6 py-4 border-b border-black/5 last:border-0'
-                        >
-                          <span
-                            className={`w-8 h-8 flex items-center justify-center rounded-full text-lg font-bold shrink-0 ${
-                              medalBg || 'text-black/40'
-                            }`}
+                  <div className='max-h-[620px] overflow-y-auto'>
+                    <ul>
+                      {listEntries.map((e, i) => {
+                        const rank = (page - 1) * PAGE_SIZE + i + 1;
+                        const medalBg =
+                          rank === 1
+                            ? 'bg-amber-400 text-white'
+                            : rank === 2
+                              ? 'bg-slate-300 text-slate-800'
+                              : rank === 3
+                                ? 'bg-amber-700 text-white'
+                                : '';
+                        const avatarRing =
+                          rank === 1
+                            ? 'ring-3 ring-amber-500 ring-offset-2 ring-offset-white'
+                            : rank === 2
+                              ? 'ring-3 ring-slate-400 ring-offset-2 ring-offset-white'
+                              : rank === 3
+                                ? 'ring-3 ring-amber-800 ring-offset-2 ring-offset-white'
+                                : '';
+                        return (
+                          <li
+                            key={e.id}
+                            className='flex items-center gap-4 px-6 py-4 border-b border-black/5 last:border-0'
                           >
-                            {rank}
-                          </span>
-                          <div
-                            className={`h-10 w-10 rounded-full bg-zinc-100 overflow-hidden shrink-0 ${avatarRing}`}
-                          >
-                            {e.avatarUrl ? (
-                              <img
-                                src={e.avatarUrl}
-                                alt=''
-                                className='h-full w-full object-cover'
-                              />
-                            ) : (
-                              <div className='h-full w-full flex items-center justify-center text-lg font-semibold text-zinc-500'>
-                                {(e.displayName ?? '?')[0]}
-                              </div>
-                            )}
-                          </div>
-                          <div className='flex-1 min-w-0'>
-                            <div className='font-medium truncate'>
-                              {e.displayName ?? 'Anonymous'}
+                            <span
+                              className={`w-8 h-8 flex items-center justify-center rounded-full text-lg font-bold shrink-0 ${
+                                medalBg || 'text-black/40'
+                              }`}
+                            >
+                              {rank}
+                            </span>
+                            <div
+                              className={`h-10 w-10 rounded-full bg-zinc-100 overflow-hidden shrink-0 ${avatarRing}`}
+                            >
+                              {e.avatarUrl ? (
+                                <img
+                                  src={e.avatarUrl}
+                                  alt=''
+                                  className='h-full w-full object-cover'
+                                />
+                              ) : (
+                                <div className='h-full w-full flex items-center justify-center text-lg font-semibold text-zinc-500'>
+                                  {(e.displayName ?? '?')[0]}
+                                </div>
+                              )}
                             </div>
-                            {companiesByUserId[e.userID] && (
-                              <div className='text-sm text-black/50 truncate'>
-                                {companiesByUserId[e.userID]}
+                            <div className='flex-1 min-w-0'>
+                              <div className='font-medium truncate'>
+                                {e.displayName ?? 'Anonymous'}
                               </div>
-                            )}
-                          </div>
-                          <span className='text-xl font-bold text-zinc-700 shrink-0'>
-                            {e.score}
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                              {companiesByUserId[e.userID] && (
+                                <div className='text-sm text-black/50 truncate'>
+                                  {companiesByUserId[e.userID]}
+                                </div>
+                              )}
+                            </div>
+                            <span className='text-xl font-bold text-zinc-700 shrink-0'>
+                              {e.score}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                   {totalPages > 1 && (
                     <div className='flex items-center justify-center gap-4 py-4 border-t border-black/5'>
                       <button

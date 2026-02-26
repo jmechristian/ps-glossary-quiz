@@ -11,10 +11,12 @@ export type EnterInitialsProps = {
   open: boolean;
   isGuest?: boolean;
   score?: number;
+  /** When user is logged in and has initials saved, prepopulate the input */
+  defaultInitials?: string;
   onLogin?: () => void;
   onPlayAgain?: () => void;
   onHome?: () => void;
-  onSubmit: (initials: string) => void;
+  onSubmit: (initials: string) => void | Promise<void>;
   onSkip?: () => void;
 };
 
@@ -22,13 +24,16 @@ export function EnterInitials({
   open,
   isGuest = false,
   score = 0,
+  defaultInitials = '',
   onLogin,
   onPlayAgain,
   onHome,
   onSubmit,
   onSkip,
 }: EnterInitialsProps) {
-  const [value, setValue] = useState('');
+  const sanitizedDefault = (defaultInitials ?? '').slice(0, MAX_LENGTH).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const [value, setValue] = useState(sanitizedDefault);
+  const [saving, setSaving] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,29 +41,38 @@ export function EnterInitials({
     setValue(raw.slice(0, MAX_LENGTH));
   }, []);
 
+  const runSubmit = useCallback(async () => {
+    if (value.length === 0 || saving) return;
+    setSaving(true);
+    try {
+      await Promise.resolve(onSubmit(value));
+    } finally {
+      setSaving(false);
+    }
+  }, [value, saving, onSubmit]);
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && value.length > 0) {
-        onSubmit(value);
+      if (e.key === 'Enter' && value.length > 0 && !saving) {
+        e.preventDefault();
+        runSubmit();
       }
     },
-    [onSubmit, value],
+    [value, saving, runSubmit],
   );
 
   useEffect(() => {
     if (open) {
       inputRef.current?.focus();
-    } else {
-      setValue('');
     }
   }, [open]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (value.length > 0) onSubmit(value);
+      if (value.length > 0 && !saving) runSubmit();
     },
-    [onSubmit, value],
+    [value, saving, runSubmit],
   );
 
   return (
@@ -145,23 +159,32 @@ export function EnterInitials({
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     placeholder='AAA'
-                    className='w-full rounded-xl border-2 border-black/15 bg-white px-4 py-4 text-center text-2xl font-bold tracking-[0.5em] text-black/90 placeholder:text-black/25 focus:border-clemson focus:outline-none focus:ring-2 focus:ring-clemson/20'
+                    disabled={saving}
+                    className='w-full rounded-xl border-2 border-black/15 bg-white px-4 py-4 text-center text-2xl font-bold tracking-[0.5em] text-black/90 placeholder:text-black/25 focus:border-clemson focus:outline-none focus:ring-2 focus:ring-clemson/20 disabled:opacity-70 disabled:cursor-not-allowed'
                     aria-label='Your initials (3 characters)'
                   />
 
                   <div className='mt-6 flex flex-col gap-3'>
                     <button
                       type='submit'
-                      disabled={value.length === 0}
-                      className={`w-full py-4 ${ui.primaryBtn} disabled:opacity-50 disabled:pointer-events-none`}
+                      disabled={value.length === 0 || saving}
+                      className={`w-full py-4 ${ui.primaryBtn} disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 min-h-12`}
                     >
-                      Submit
+                      {saving ? (
+                        <>
+                          <span className='inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-white border-t-transparent' aria-hidden />
+                          Saving…
+                        </>
+                      ) : (
+                        'Submit'
+                      )}
                     </button>
                     {onSkip && (
                       <button
                         type='button'
                         onClick={onSkip}
-                        className={`w-full py-3 ${ui.ghostBtn}`}
+                        disabled={saving}
+                        className={`w-full py-3 ${ui.ghostBtn} disabled:opacity-50 disabled:pointer-events-none`}
                       >
                         Skip
                       </button>

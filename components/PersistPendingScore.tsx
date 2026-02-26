@@ -1,20 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useAuth } from '@/lib/auth';
-import { flushPendingScore } from '@/lib/pendingScore';
-
 /**
- * When user becomes available (e.g. after login redirect), persist any score
- * they saved as a guest so it works whether they land on /play or /leaderboard.
+ * Pending score is no longer auto-flushed here. When a guest clicks "Sign in to save",
+ * they are sent to login with returnTo=/play. After login they land on /play, which
+ * shows the Enter Initials flow and then calls flushPendingScoreWithInitials.
  */
 export function PersistPendingScore() {
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (!user) return;
-    flushPendingScore(user);
-  }, [user]);
-
   return null;
 }
