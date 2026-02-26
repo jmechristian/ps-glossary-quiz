@@ -17,12 +17,14 @@ export type User = {
   id: string;
   name: string;
   picture: string | null;
+  email?: string | null;
 };
 
 type AuthContextValue = {
   user: User | null;
   isLoading: boolean;
-  login: () => void;
+  /** Redirect to login. Optionally pass returnTo path to come back after auth (e.g. "/play"). */
+  login: (returnTo?: string) => void;
   logout: () => void;
 };
 
@@ -42,8 +44,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = useCallback(() => {
-    window.location.href = "/auth/login";
+  const login = useCallback((returnTo?: string) => {
+    const url = returnTo
+      ? `/auth/login?returnTo=${encodeURIComponent(returnTo)}`
+      : "/auth/login";
+    window.location.href = url;
   }, []);
 
   const logout = useCallback(() => {

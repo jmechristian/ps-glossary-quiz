@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth';
 import { GameViewport } from '@/components/GameViewport';
+import { PersistPendingScore } from '@/components/PersistPendingScore';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,6 +32,7 @@ export default function RootLayout({
         style={{ backgroundColor: '#000000' }}
       >
         <AuthProvider>
+          <PersistPendingScore />
           <GameViewport>{children}</GameViewport>
         </AuthProvider>
       </body>

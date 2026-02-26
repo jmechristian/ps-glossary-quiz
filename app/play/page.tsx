@@ -1,37 +1,48 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useGameStore } from "@/lib/gameStore";
-import { useAuth } from "@/lib/auth";
-import { createTermSelector } from "@/lib/randomTerms";
-import { pickDistractors, buildChoices, createRecentQueue } from "@/lib/distractors";
-import { termFetcher, fetchLetterPool, resetTermFetcherSession } from "@/lib/gameApi";
+import { useEffect, useRef, useCallback, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useGameStore } from '@/lib/gameStore';
+import { useAuth } from '@/lib/auth';
+import { createTermSelector } from '@/lib/randomTerms';
+import {
+  pickDistractors,
+  buildChoices,
+  createRecentQueue,
+} from '@/lib/distractors';
+import {
+  termFetcher,
+  fetchLetterPool,
+  resetTermFetcherSession,
+} from '@/lib/gameApi';
 import {
   upsertUserGameStats,
   upsertLeaderboardEntry,
   updateLeaderboardInitials,
-} from "@/lib/gameApi";
-import { BoardPath } from "@/components/BoardPath";
-import { FlashcardPrompt } from "@/components/FlashcardPrompt";
-import { ChoiceButtons } from "@/components/ChoiceButtons";
-import { TimerRing } from "@/components/TimerRing";
-import { ResultToast } from "@/components/ResultToast";
-import { EnterInitials } from "@/components/EnterInitials";
-import { StreakHUD } from "@/components/StreakHUD";
-import { AnimatedCard } from "@/components/motion/AnimatedCard";
-import { ui } from "@/components/ui/styles";
-import type { GlossaryTermLike } from "@/lib/randomTerms";
-import type { LeaderboardPeriod } from "@/lib/leaderboard";
+} from '@/lib/gameApi';
+import { BoardPath } from '@/components/BoardPath';
+import { FlashcardPrompt } from '@/components/FlashcardPrompt';
+import { ChoiceButtons } from '@/components/ChoiceButtons';
+import { TimerRing } from '@/components/TimerRing';
+import { ResultToast } from '@/components/ResultToast';
+import { EnterInitials, type EnterInitialsProps } from '@/components/EnterInitials';
+import { StreakHUD } from '@/components/StreakHUD';
+import { PixelLoader } from '@/components/PixelLoader';
+import { AnimatedCard } from '@/components/motion/AnimatedCard';
+import { ui } from '@/components/ui/styles';
+import type { GlossaryTermLike } from '@/lib/randomTerms';
+import type { LeaderboardPeriod } from '@/lib/leaderboard';
+import { PENDING_SCORE_KEY } from '@/lib/pendingScore';
 
 const TIMER_SECONDS = 10;
+const ENABLE_TIMER = true;
 const FEEDBACK_MS = 500;
 
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export default function PlayPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const {
     phase,
     currentTerm,
@@ -50,7 +61,9 @@ export default function PlayPage() {
     reset,
   } = useGameStore();
 
-  const selectorRef = useRef<ReturnType<typeof createTermSelector> | null>(null);
+  const selectorRef = useRef<ReturnType<typeof createTermSelector> | null>(
+    null,
+  );
   const letterPoolCache = useRef<Map<string, GlossaryTermLike[]>>(new Map());
   const recentDistractors = useRef(createRecentQueue());
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -63,21 +76,21 @@ export default function PlayPage() {
       if (!user) return;
       try {
         await upsertUserGameStats(user.id, { streakCorrect: finalStreak });
-        const periods: LeaderboardPeriod[] = ["DAILY", "WEEKLY", "ALL"];
+        const periods: LeaderboardPeriod[] = ['DAILY', 'WEEKLY', 'ALL'];
         for (const p of periods) {
           await upsertLeaderboardEntry(
             p,
             user.id,
             user.name,
             user.picture,
-            finalStreak
+            finalStreak,
           );
         }
       } catch (e) {
-        console.warn("Persist failed:", e);
+        console.warn('Persist failed:', e);
       }
     },
-    [user]
+    [user],
   );
 
   const loadNextTerm = useCallback(async () => {
@@ -86,7 +99,7 @@ export default function PlayPage() {
     const term = await selectorRef.current.getNextTerm();
     if (!term) {
       gameOverAttemptedRef.current = streakCorrect;
-      setPhase("gameover");
+      setPhase('gameover');
       await persistGameOver(streakCorrect);
       return;
     }
@@ -97,14 +110,19 @@ export default function PlayPage() {
       letterPoolCache.current.set(term.letter, pool);
     }
 
-    const distractorResult = pickDistractors(term, pool, recentDistractors.current.get());
+    const distractorResult = pickDistractors(
+      term,
+      pool,
+      recentDistractors.current.get(),
+    );
     let defs: [string, string];
     if (distractorResult) {
       recentDistractors.current.add(distractorResult[0].id);
       recentDistractors.current.add(distractorResult[1].id);
       defs = [distractorResult[0].definition, distractorResult[1].definition];
     } else {
-      const fallbackLetter = LETTERS[Math.floor(Math.random() * LETTERS.length)];
+      const fallbackLetter =
+        LETTERS[Math.floor(Math.random() * LETTERS.length)];
       let fallbackPool = letterPoolCache.current.get(fallbackLetter);
       if (!fallbackPool) {
         fallbackPool = await fetchLetterPool(fallbackLetter);
@@ -114,7 +132,7 @@ export default function PlayPage() {
         .filter((t) => t.id !== term.id)
         .slice(0, 2)
         .map((t) => t.definition);
-      defs = [others[0] ?? "", others[1] ?? ""];
+      defs = [others[0] ?? '', others[1] ?? ''];
     }
 
     const allChoices = buildChoices(term.definition, defs[0], defs[1]);
@@ -122,14 +140,21 @@ export default function PlayPage() {
     setCurrentTerm(term, allChoices, correctIndex);
     setTimerRemaining(TIMER_SECONDS);
     setSelectedIndex(null);
-  }, [setCurrentTerm, setTimerRemaining, setPhase, persistGameOver, streakCorrect]);
+  }, [
+    setCurrentTerm,
+    setTimerRemaining,
+    setPhase,
+    persistGameOver,
+    streakCorrect,
+  ]);
 
   useEffect(() => {
-    if (phase !== "playing") return;
+    if (!ENABLE_TIMER) return;
+    if (phase !== 'playing') return;
 
     timerRef.current = setInterval(() => {
-      setTimerRemaining(
-        (prev) => Math.max(0, Math.round((prev - 0.1) * 10) / 10)
+      setTimerRemaining((prev) =>
+        Math.max(0, Math.round((prev - 0.1) * 10) / 10),
       );
     }, 100);
 
@@ -139,35 +164,36 @@ export default function PlayPage() {
   }, [phase, setTimerRemaining]);
 
   useEffect(() => {
-    if (phase !== "playing") return;
+    if (!ENABLE_TIMER) return;
+    if (phase !== 'playing') return;
     if (timerRemaining <= 0) {
       if (timerRef.current) clearInterval(timerRef.current);
       gameOverAttemptedRef.current = streakCorrect;
-      setPhase("gameover");
+      setPhase('gameover');
       persistGameOver(streakCorrect);
     }
   }, [timerRemaining, phase, setPhase, persistGameOver, streakCorrect]);
 
   useEffect(() => {
-    if (useGameStore.getState().phase === "gameover") {
-      setPhase("idle");
+    if (useGameStore.getState().phase === 'gameover') {
+      setPhase('idle');
     }
   }, []);
 
   useEffect(() => {
-    if (phase === "idle") {
+    if (phase === 'idle') {
       reset();
       selectorRef.current = createTermSelector(termFetcher);
       resetTermFetcherSession();
       letterPoolCache.current.clear();
       recentDistractors.current = createRecentQueue();
-      setPhase("playing");
+      setPhase('playing');
       setStreak(0);
     }
   }, [phase]);
 
   useEffect(() => {
-    if (phase === "playing" && !currentTerm && selectorRef.current) {
+    if (phase === 'playing' && !currentTerm && selectorRef.current) {
       loadNextTerm();
     }
   }, [phase, currentTerm, loadNextTerm]);
@@ -184,7 +210,7 @@ export default function PlayPage() {
       if (!correct) {
         gameOverAttemptedRef.current = streakCorrect + 1;
         setTimeout(() => {
-          setPhase("gameover");
+          setPhase('gameover');
           persistGameOver(streakCorrect);
         }, FEEDBACK_MS);
         return;
@@ -195,86 +221,137 @@ export default function PlayPage() {
       setBoardPosition(newStreak);
 
       setTimeout(() => {
-        setPhase("feedback");
+        setPhase('feedback');
         setTimeout(() => {
           setCurrentTerm(null, [], 0);
           loadNextTerm();
-          setPhase("playing");
+          setPhase('playing');
         }, FEEDBACK_MS);
       }, FEEDBACK_MS);
     },
-    [correctChoiceIndex, streakCorrect, selectedIndex, setFeedback, setStreak, setBoardPosition, setPhase, setCurrentTerm, loadNextTerm, persistGameOver]
+    [
+      correctChoiceIndex,
+      streakCorrect,
+      selectedIndex,
+      setFeedback,
+      setStreak,
+      setBoardPosition,
+      setPhase,
+      setCurrentTerm,
+      loadNextTerm,
+      persistGameOver,
+    ],
   );
 
-  if (phase === "gameover") {
-    const showEnterInitials = user && !initialsDone;
+  if (phase === 'gameover') {
+    const showEnterInitials = !initialsDone;
     return (
       <>
         <EnterInitials
-          open={showEnterInitials}
-          onSubmit={async (initials) => {
-            if (user) {
-              await updateLeaderboardInitials(user.id, initials);
-            }
-            setInitialsDone(true);
-          }}
-          onSkip={() => setInitialsDone(true)}
+          {...({
+            open: showEnterInitials,
+            isGuest: !user,
+            score: streakCorrect,
+            onLogin: !user
+              ? () => {
+                  try {
+                    sessionStorage.setItem(
+                      PENDING_SCORE_KEY,
+                      JSON.stringify({ score: streakCorrect }),
+                    );
+                  } catch {
+                    /* ignore */
+                  }
+                  login('/leaderboard');
+                }
+              : undefined,
+            onPlayAgain: () => {
+              setInitialsDone(true);
+              setPhase('idle');
+            },
+            onHome: () => {
+              setInitialsDone(true);
+              router.push('/');
+            },
+            onSubmit: async (initials) => {
+              if (user) {
+                await updateLeaderboardInitials(user.id, initials);
+              }
+              setInitialsDone(true);
+            },
+            onSkip: () => setInitialsDone(true),
+          } satisfies EnterInitialsProps)}
         />
         <ResultToast
-          open={!showEnterInitials}
+          open={initialsDone}
           correct={streakCorrect}
           streak={streakCorrect}
           attempted={gameOverAttemptedRef.current}
           onPlayAgain={() => {
             setInitialsDone(false);
-            setPhase("idle");
+            setPhase('idle');
           }}
-          onLeaderboard={() => router.push("/leaderboard")}
-          onHome={() => router.push("/")}
+          onLeaderboard={() => router.push('/leaderboard')}
+          onHome={() => router.push('/')}
         />
-        <div className="min-h-full" />
+        <div className='min-h-full' />
       </>
     );
   }
 
   if (!currentTerm) {
-    return (
-      <div className="flex h-full min-h-full items-center justify-center">
-        <div className="text-xl text-zinc-600">Loading...</div>
-      </div>
-    );
+    return <PixelLoader />;
   }
 
   const feedback =
-    isCorrect === true ? "correct" : isCorrect === false ? "wrong" : "idle";
+    isCorrect === true ? 'correct' : isCorrect === false ? 'wrong' : 'idle';
   const feedbackIndex = isCorrect !== null ? selectedIndex : null;
 
   return (
-    <div className={`h-full min-h-full ${ui.page} p-4 md:p-8`}>
-      <div className={`${ui.container} ${ui.stage}`}>
-        <div className="flex items-center justify-between mb-4 py-2 px-1 rounded-xl bg-white/60 border border-black/5">
-          <StreakHUD streak={streakCorrect} />
-          <TimerRing remaining={timerRemaining} />
-        </div>
-        <BoardPath currentPosition={boardPosition} />
-        <div className="mt-8 space-y-6">
-          <AnimatedCard
-            motionKey={currentTerm?.id ?? boardPosition}
+    <div
+      className={`h-full min-h-full w-full bg-cover bg-center bg-no-repeat overflow-hidden p-4 md:p-8`}
+      style={{ backgroundImage: 'url(/images/game-2.webp)' }}
+    >
+      <div className={`${ui.container} max-w-6xl h-full flex gap-6`}>
+        <div className='flex flex-col gap-4 shrink-0 w-[140px]'>
+          <div
+            className={`${ui.surface} flex flex-col items-center justify-center p-4`}
           >
-            <FlashcardPrompt term={currentTerm.term} />
-          </AnimatedCard>
-          <ChoiceButtons
-            choices={choices}
-            correctIndex={correctChoiceIndex}
-            selectedIndex={selectedIndex}
-            isRevealed={isCorrect !== null}
-            onSelect={handleSelect}
-            feedback={feedback}
-            feedbackIndex={feedbackIndex}
-          />
-          <p className={`text-center text-sm ${ui.muted}`}>
-            One mistake ends the run.
-          </p>
+            <span className='text-xs font-semibold text-black/50 uppercase tracking-wide mb-2'>
+              Time
+            </span>
+            <TimerRing remaining={timerRemaining} />
+          </div>
+          <div
+            className={`${ui.surface} flex flex-col items-center justify-center p-4`}
+          >
+            <span className='text-xs font-semibold text-black/50 uppercase tracking-wide mb-2'>
+              Current run
+            </span>
+            <StreakHUD streak={streakCorrect} hideLabel />
+          </div>
+        </div>
+        <div className='flex-1 min-w-0 flex flex-col min-h-0 overflow-y-auto'>
+          <div className='space-y-4'>
+            <AnimatedCard motionKey={currentTerm?.id ?? boardPosition}>
+              <FlashcardPrompt term={currentTerm.term} />
+            </AnimatedCard>
+            <ChoiceButtons
+              choices={choices}
+              correctIndex={correctChoiceIndex}
+              selectedIndex={selectedIndex}
+              isRevealed={isCorrect !== null}
+              onSelect={handleSelect}
+              feedback={feedback}
+              feedbackIndex={feedbackIndex}
+            />
+            <p className={`text-center text-sm ${ui.muted}`}>
+              One mistake ends the run.
+            </p>
+          </div>
+          <div className='mt-4 shrink-0'>
+            <BoardPath currentPosition={boardPosition} />
+          </div>
         </div>
       </div>
     </div>

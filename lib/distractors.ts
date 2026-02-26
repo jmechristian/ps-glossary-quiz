@@ -13,6 +13,9 @@ export type TermWithDef = {
 
 const RECENT_QUEUE_SIZE = 30;
 
+/** Prefer distractors with similar length to the correct definition so choices look even. */
+const LENGTH_PENALTY_FACTOR = 0.08;
+
 function similarityScore(candidateDef: string, correctDef: string): number {
   const cTokens = tokenize(candidateDef);
   const corrTokens = new Set(tokenize(correctDef));
@@ -20,7 +23,8 @@ function similarityScore(candidateDef: string, correctDef: string): number {
   for (const t of cTokens) {
     if (corrTokens.has(t)) overlap++;
   }
-  const lenPenalty = Math.abs(candidateDef.length - correctDef.length) * 0.02;
+  const lenDiff = Math.abs(candidateDef.length - correctDef.length);
+  const lenPenalty = lenDiff * LENGTH_PENALTY_FACTOR;
   return overlap * 10 - lenPenalty;
 }
 
@@ -30,8 +34,20 @@ export function pickDistractors(
   recentUsedIds: string[]
 ): [TermWithDef, TermWithDef] | null {
   const excludeIds = new Set([correctTerm.id, ...recentUsedIds]);
-  const candidates = pool.filter((t) => !excludeIds.has(t.id));
-  if (candidates.length < 2) return null;
+  const baseCandidates = pool.filter((t) => !excludeIds.has(t.id));
+  if (baseCandidates.length < 2) return null;
+
+  // Prefer candidates whose definition length is in a similar band to the correct one,
+  // but fall back to the full pool if that leaves us with fewer than 2.
+  const correctLen = correctTerm.definition.length || 1;
+  const MIN_RATIO = 0.5;
+  const MAX_RATIO = 2.0;
+  const lengthBand = baseCandidates.filter((t) => {
+    const len = t.definition.length || 1;
+    const ratio = len / correctLen;
+    return ratio >= MIN_RATIO && ratio <= MAX_RATIO;
+  });
+  const candidates = lengthBand.length >= 2 ? lengthBand : baseCandidates;
 
   const scored = candidates.map((t) => ({
     term: t,

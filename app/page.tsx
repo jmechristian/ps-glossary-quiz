@@ -31,7 +31,7 @@ export default function HomePage() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, ease: 'easeInOut' }}
       exit={{ opacity: 0, scale: 1.05 }}
-      className={`relative flex h-full min-h-full flex-col items-center justify-center ${ui.page} p-6 bg-cover bg-center bg-no-repeat overflow-hidden`}
+      className={`relative flex h-full min-h-full flex-col items-center justify-center ${ui.page} bg-cover bg-center bg-no-repeat overflow-hidden`}
       style={{ backgroundImage: 'url(/images/bg-7.webp)' }}
     >
       {/* Top-right: highest streak across all users (always visible) */}
@@ -50,7 +50,7 @@ export default function HomePage() {
       </div> */}
 
       <main className={`${ui.container} ${ui.stage} text-center`}>
-        <div className='flex flex-col items-center justify-center gap-24 mt-16'>
+        <div className='flex flex-col items-center justify-center gap-24 mt-24'>
           <div className='flex flex-col items-center justify-center gap-8'>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -85,7 +85,10 @@ export default function HomePage() {
               />
             </motion.div>
           </div>
-          <div className='flex flex-col items-center justify-center'>
+          <Link
+            href='/play'
+            className='flex flex-col items-center justify-center cursor-pointer [&_img]:cursor-pointer'
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -100,14 +103,15 @@ export default function HomePage() {
                 bounce: 2,
                 type: 'spring',
               }}
+              className='cursor-pointer'
             >
               <img
                 src='/images/start.svg'
-                alt='PackRun'
-                className='w-full max-w-[400px] animate-pulse hover:animate-none transition-all duration-300'
+                alt='Start game'
+                className='w-full max-w-[400px] animate-pulse hover:animate-none transition-all duration-300 pointer-events-none'
               />
             </motion.div>
-          </div>
+          </Link>
           <motion.div
             className='flex flex-col items-center justify-center gap-16'
             initial={{ opacity: 0, y: 20 }}
@@ -145,7 +149,7 @@ export default function HomePage() {
                 ) : (
                   <button
                     type='button'
-                    onClick={login}
+                    onClick={() => login()}
                     className={`px-6 py-3 ${ui.primaryBtn} text-lg`}
                   >
                     Log in

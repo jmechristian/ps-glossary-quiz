@@ -4,9 +4,11 @@ import { motion } from "framer-motion";
 
 type StreakHUDProps = {
   streak: number;
+  /** When true, only show number + emoji (e.g. when card title already says "Current run") */
+  hideLabel?: boolean;
 };
 
-export function StreakHUD({ streak }: StreakHUDProps) {
+export function StreakHUD({ streak, hideLabel }: StreakHUDProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }}
@@ -17,9 +19,11 @@ export function StreakHUD({ streak }: StreakHUDProps) {
       <span className="text-xl font-bold text-amber-800 dark:text-amber-200 tabular-nums">
         {streak}
       </span>
-      <span className="text-sm font-medium text-amber-700 dark:text-amber-300">
-        Current Run
-      </span>
+      {!hideLabel && (
+        <span className="text-sm font-medium text-amber-700 dark:text-amber-300">
+          Current Run
+        </span>
+      )}
     </motion.div>
   );
 }

@@ -10,6 +10,7 @@ import { apiOnlyConfig } from "@/src/amplify-config-api-only";
 import {
   listGlossaryTerms,
   glossaryTermsByLetterAndTerm,
+  getUser as getUserQuery,
   getUserGameStats as getUserGameStatsQuery,
   leaderboardEntriesByKeyAndSortKey,
   getLeaderboardEntry as getLeaderboardEntryQuery,
@@ -19,6 +20,7 @@ import {
   updateUserGameStats as updateUserGameStatsMutation,
   createLeaderboardEntry as createLeaderboardEntryMutation,
   updateLeaderboardEntry as updateLeaderboardEntryMutation,
+  updateUser as updateUserMutation,
 } from "@/src/graphql/mutations";
 import { ModelSortDirection, LeaderboardPeriod as LeaderboardPeriodEnum } from "@/src/API";
 import type { GlossaryTerm } from "@/src/API";
@@ -153,6 +155,47 @@ export interface LeaderboardEntryData {
 
 function getData<T>(result: unknown): T {
   return (result as { data?: T }).data as T;
+}
+
+export interface UserProfileData {
+  name?: string | null;
+  title?: string | null;
+  company?: string | null;
+}
+
+export async function getUserProfile(userId: string): Promise<UserProfileData | null> {
+  try {
+    const result = await client.graphql({
+      query: getUserQuery,
+      variables: { id: userId },
+    });
+    const data = getData<{ getUser?: UserProfileData }>(result);
+    const u = data.getUser;
+    if (!u) return null;
+    return {
+      name: u.name ?? null,
+      title: u.title ?? null,
+      company: u.company ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function updateUserProfile(
+  userId: string,
+  updates: { name?: string; title?: string; company?: string }
+): Promise<void> {
+  try {
+    await client.graphql({
+      query: updateUserMutation,
+      variables: {
+        input: { id: userId, ...updates },
+      },
+    });
+  } catch (e) {
+    console.warn("Could not update user profile:", e);
+  }
 }
 
 export async function getUserGameStats(userId: string): Promise<UserGameStatsData | null> {

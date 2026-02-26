@@ -1,5 +1,5 @@
 export const ui = {
-  page: 'h-full min-h-full w-full bg-base-light',
+  page: 'h-full min-h-full w-full',
   container: 'mx-auto w-full max-w-5xl px-4 sm:px-6',
   stage: 'mx-auto w-full max-w-3xl',
 

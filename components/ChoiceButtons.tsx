@@ -42,13 +42,14 @@ export function ChoiceButtons({
       {choices.map((choice, i) => {
         const selected = selectedIndex === i;
         const isCorrectChoice = i === correctIndex;
-        let btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium min-h-[72px] w-full transition-shadow ${ui.surfaceSm} hover:shadow-[0_14px_34px_rgba(0,0,0,0.10)]`;
+        const baseHeight = "min-h-[7.5rem]";
+        let btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium ${baseHeight} w-full transition-shadow ${ui.surfaceSm} hover:shadow-[0_14px_34px_rgba(0,0,0,0.10)]`;
 
         if (isRevealed) {
           if (isCorrectChoice) {
-            btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium min-h-[72px] w-full bg-emerald-500 text-white ring-2 ring-emerald-400/60`;
+            btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium ${baseHeight} w-full bg-emerald-500 text-white ring-2 ring-emerald-400/60`;
           } else if (selected && !isCorrectChoice) {
-            btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium min-h-[72px] w-full bg-rose-50/80 ring-2 ring-rose-400/70 text-rose-900`;
+            btnClass = `flex items-center gap-4 rounded-2xl p-5 md:p-6 text-left text-lg font-medium ${baseHeight} w-full bg-rose-50/80 ring-2 ring-rose-400/70 text-rose-900`;
           }
         } else if (selected) {
           btnClass += feedback === "correct"
@@ -73,7 +74,9 @@ export function ChoiceButtons({
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 font-bold">
               {i + 1}
             </span>
-            <span className="wrap-break-word">{choice}</span>
+            <span className="wrap-break-word flex-1">
+              {choice}
+            </span>
           </motion.button>
         );
 
