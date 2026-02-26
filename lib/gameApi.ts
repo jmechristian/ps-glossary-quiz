@@ -287,7 +287,7 @@ export async function getLeaderboard(
     });
     const data = getData<{ leaderboardEntriesByKeyAndSortKey?: { items: LeaderboardEntryData[] } }>(result);
     const items = data.leaderboardEntriesByKeyAndSortKey?.items ?? [];
-    return items.filter(Boolean);
+    return items.filter((e): e is LeaderboardEntryData => Boolean(e) && e.score > 0);
   } catch {
     return [];
   }
