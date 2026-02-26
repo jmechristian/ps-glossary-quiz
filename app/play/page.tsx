@@ -25,7 +25,10 @@ import { FlashcardPrompt } from '@/components/FlashcardPrompt';
 import { ChoiceButtons } from '@/components/ChoiceButtons';
 import { TimerRing } from '@/components/TimerRing';
 import { ResultToast } from '@/components/ResultToast';
-import { EnterInitials, type EnterInitialsProps } from '@/components/EnterInitials';
+import {
+  EnterInitials,
+  type EnterInitialsProps,
+} from '@/components/EnterInitials';
 import { StreakHUD } from '@/components/StreakHUD';
 import { PixelLoader } from '@/components/PixelLoader';
 import { AnimatedCard } from '@/components/motion/AnimatedCard';
@@ -310,7 +313,7 @@ export default function PlayPage() {
   return (
     <div
       className={`h-full min-h-full w-full bg-cover bg-center bg-no-repeat overflow-hidden p-4 md:p-8`}
-      style={{ backgroundImage: 'url(/images/game-2.webp)' }}
+      style={{ backgroundImage: 'url(/images/back-black.png)' }}
     >
       <div className={`${ui.container} max-w-6xl h-full flex gap-6`}>
         <div className='flex flex-col gap-4 shrink-0 w-[140px]'>
