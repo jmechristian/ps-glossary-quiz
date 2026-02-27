@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { getLeaderboard, getUserProfile, syncEntriesToAllTime } from '@/lib/gameApi';
+import {
+  getLeaderboard,
+  getUserProfile,
+  syncEntriesToAllTime,
+} from '@/lib/gameApi';
 import {
   SegmentedTabs,
   type TabKey,
@@ -205,7 +209,7 @@ export default function LeaderboardPage() {
                 </div>
               ) : entries.length > 0 ? (
                 <div className={`${ui.surface} overflow-hidden`}>
-                  <div className='max-h-[620px] overflow-y-auto'>
+                  <div className='max-h-[480px] overflow-y-auto'>
                     <ul>
                       {listEntries.map((e, i) => {
                         const rank = (page - 1) * PAGE_SIZE + i + 1;
